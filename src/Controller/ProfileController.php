@@ -15,26 +15,14 @@ class ProfileController extends AbstractController
 {
     /**
      * @Route("/profile", name="profile_index")
-     * @param UserRepository $userRepository
-     * @return Response
      */
-    public function index(UserRepository $userRepository): Response
+    public function index(): Response
     {
-        $user = $userRepository->findOneBy([
-            'email' => $this->getUser()->getUsername()
-        ]);
-
-        return $this->render('profile/index.html.twig', [
-            'user' => $user,
-        ]);
+        return $this->render('profile/index.html.twig');
     }
 
     /**
      * @Route("/profile/edit", name="profile_edit")
-     * @param Request $request
-     * @param UserRepository $userRepository
-     * @param FileUploader $fileUploader
-     * @return Response
      */
     public function edit(Request $request, UserRepository $userRepository, FileUploader $fileUploader): Response
     {
@@ -70,33 +58,35 @@ class ProfileController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                $html = $this->renderView('profile/edit.html.twig', [
+                $profileInformation = $this->renderView('profile/profileInformation.html.twig', [
                     'user' => $user,
                 ]);
 
                 return new JsonResponse([
-                    'html'    => $html,
-                    'message' => 'Success!'
+                    'profileInformation' => $profileInformation,
+                    'message'            => 'Success!'
                 ], 200);
             }
         }
 
-        $html = $this->renderView('profile/editForm.html.twig', [
-            'user' => $user,
+        $profileInformation = $this->renderView('profile/profileInformation.html.twig', [
+            'user' => $user
+        ]);
+
+        $editForm = $this->renderView('profile/editForm.html.twig', [
             'form' => $form->createView(),
+            'user' => $user
         ]);
 
         return new JsonResponse([
-            'html' => $html,
-            'message' => 'Success!'
+            'profileInformation' => $profileInformation,
+            'editForm'           => $editForm,
+            'message'            => 'Success!'
         ], 200);
     }
 
     /**
      * @Route("/profile/deleteImage", name="profile_deleteImage")
-     * @param UserRepository $userRepository
-     * @param FileUploader $fileUploader
-     * @return Response
      */
     public function deleteImage(UserRepository $userRepository, FileUploader $fileUploader): Response
     {

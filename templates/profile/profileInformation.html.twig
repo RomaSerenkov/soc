@@ -1,16 +1,18 @@
-<h4 class="text-center">Your Profile</h4>
 <div class="row justify-content-center mb-3">
     {% if user.image is null %}
-        <img src="{{ asset('build/images/login/user-anonymous.png') }}"
+        <img src="{{ asset('images/login/user-anonymous.png') }}"
              class="rounded-circle" width="100px"/>
     {% else %}
-        <img src="{{ asset('build/images/uploads/' ~ user.email ~ '/' ~ user.image) }}"
+        <img src="{{ asset('images/uploads/' ~ user.email ~ '/' ~ user.image) }}"
              class="rounded-circle" width="100px"/>
     {% endif %}
 </div>
-
 <ul class="list-group">
     <li class="list-group-item"><b>First Name:</b> {{ user.firstname }}</li>
     <li class="list-group-item"><b>Last Name:</b> {{ user.lastname }}</li>
-    <li class="list-group-item"><b>Birthday:</b> {{ user.birthday|date("d.m.Y") }}</li>
+    <li class="list-group-item"><b>Birthday:</b>
+        {% if user.birthday is not null%}
+            {{ user.birthday|date("d.m.Y") }}
+        {% endif %}
+    </li>
 </ul>

@@ -1,34 +1,30 @@
 $(document).ready(function () {
-    $(document).on("click", "#editModalButton", function () {
+    getProfileInformation();
+
+    function getProfileInformation()
+    {
         fetch('/profile/edit')
             .then(response => response.json())
             .then(data => {
-                $("#exampleModal").html(data.html);
-                $("#exampleModal").modal('toggle');
+                $("#profilePage").html(data.profileInformation);
+                $("#exampleModal").html(data.editForm);
             });
+    }
+
+    $(document).on("click", "#editModalButton", function () {
+        $("#exampleModal").modal('toggle');
     });
 
     $(document).on("click", "#saveChangeButton", function () {
-        let firstName = $("#profile_form_firstName").val();
-        let lastName  = $("#profile_form_lastName").val();
-        let birthday  = $("#profile_form_birthday").val();
-        let file      = $("#profile_form_image")[0].files[0];
-        let token     = $("#profile_form__token").val();
-
-        let data = new FormData();
-        data.append('profile_form[firstName]', firstName);
-        data.append('profile_form[lastName]', lastName);
-        data.append('profile_form[birthday]', birthday);
-        data.append('profile_form[image]', file);
-        data.append('profile_form[_token]', token);
+        let formData = new FormData(document.getElementById("profileForm"));
 
         fetch('/profile/edit', {
             method: 'POST',
-            body: data
+            body: formData
         })
             .then(response => response.json())
             .then(data => {
-                $("#profilePage").html(data.html);
+                $("#profilePage").html(data.profileInformation);
                 $("#exampleModal").modal('toggle');
             })
             .catch(
