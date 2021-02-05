@@ -27,12 +27,12 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $lastName;
 
@@ -113,7 +113,7 @@ class User implements UserInterface
         return $this->firstName;
     }
 
-    public function setFirstName(?string $firstName): self
+    public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
 
@@ -125,7 +125,7 @@ class User implements UserInterface
         return $this->lastName;
     }
 
-    public function setLastName(?string $lastName): self
+    public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
 

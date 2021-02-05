@@ -1,47 +1,41 @@
+import axios from 'axios';
+
 $(document).ready(function () {
-    getProfileInformation();
-
-    function getProfileInformation()
-    {
-        fetch('/profile/edit')
-            .then(response => response.json())
-            .then(data => {
-                $("#profilePage").html(data.profileInformation);
-                $("#exampleModal").html(data.editForm);
-            });
-    }
-
-    $(document).on("click", "#editModalButton", function () {
-        $("#exampleModal").modal('toggle');
-    });
+    getProfileInformationAndEditForm('/profile/edit');
 
     $(document).on("click", "#saveChangeButton", function () {
         let formData = new FormData(document.getElementById("profileForm"));
 
-        fetch('/profile/edit', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                $("#profilePage").html(data.profileInformation);
-                $("#exampleModal").modal('toggle');
-            })
-            .catch(
-                error => console.log(error)
-            );
+        getProfileInformationAndEditForm('/profile/edit', 'post', formData);
     });
 
-    $(document).on("click", "#editImage", function () {
+    $(document).on("click", "#deleteImageButton", function () {
+        axios.get('/profile/deleteImage')
+            .then(function () {
+                getProfileInformationAndEditForm('/profile/edit');
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    });
+
+    $(document).on("click", "#editImageButton", function () {
         $('#profile_form_image').toggleClass("d-none");
     });
 
-    $(document).on("click", "#deleteImage", function () {
-        fetch('/profile/deleteImage')
-            .then(response => response.json())
-            .then(data => {
-                $('#userImage').addClass("d-none");
-                $('#profile_form_image').toggleClass("d-none");
+    function getProfileInformationAndEditForm(url, method = 'get', data = null)
+    {
+        axios({ method: method, url: url, data: data})
+            .then(function (response) {
+                $("#profilePage").html(response.data.profileInformation);
+                $("#exampleModal").html(response.data.editForm);
+
+                if (response.data.message === 'formValid') {
+                    $("#exampleModal").modal('toggle');
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
             });
-    });
+    }
 });

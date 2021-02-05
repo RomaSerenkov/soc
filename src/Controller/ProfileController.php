@@ -11,10 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/profile")
+ */
 class ProfileController extends AbstractController
 {
     /**
-     * @Route("/profile", name="profile_index")
+     * @Route("/", name="profile_index")
      */
     public function index(): Response
     {
@@ -22,7 +25,7 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * @Route("/profile/edit", name="profile_edit")
+     * @Route("/edit", name="profile_edit")
      */
     public function edit(Request $request, UserRepository $userRepository, FileUploader $fileUploader): Response
     {
@@ -62,9 +65,15 @@ class ProfileController extends AbstractController
                     'user' => $user,
                 ]);
 
+                $editForm = $this->renderView('profile/editForm.html.twig', [
+                    'form' => $form->createView(),
+                    'user' => $user
+                ]);
+
                 return new JsonResponse([
                     'profileInformation' => $profileInformation,
-                    'message'            => 'Success!'
+                    'editForm'           => $editForm,
+                    'message'            => 'formValid'
                 ], 200);
             }
         }
@@ -81,12 +90,12 @@ class ProfileController extends AbstractController
         return new JsonResponse([
             'profileInformation' => $profileInformation,
             'editForm'           => $editForm,
-            'message'            => 'Success!'
+            'message'            => 'Ok'
         ], 200);
     }
 
     /**
-     * @Route("/profile/deleteImage", name="profile_deleteImage")
+     * @Route("/deleteImage", name="profile_deleteImage")
      */
     public function deleteImage(UserRepository $userRepository, FileUploader $fileUploader): Response
     {

@@ -7,26 +7,25 @@
             </button>
         </div>
         <div class="modal-body">
+
             {{ form_start(form, {'attr': {'id': 'profileForm'}} ) }}
-            {{ form_row(form.firstName, {'attr': {'class': 'form-control',
-                'value' : user.firstname }}) }}
-            {{ form_row(form.lastName, {'attr': {'class': 'form-control',
-                'value' : user.lastname }}) }}
-            {{ form_row(form.birthday, {'attr': {'class': 'form-control',
-                'value' : user.birthday|date("Y-m-d") }}) }}
-            {{ form_label(form.image) }}
+                {{ form_row(form.firstName, {'attr': {'class': 'form-control', 'value' : user.firstname }}) }}
+                {{ form_row(form.lastName, {'attr': {'class': 'form-control', 'value' : user.lastname }}) }}
+                {{ form_row(form.birthday, {'attr': {'class': 'form-control', 'value' : user.birthday|date("Y-m-d") }}) }}
+                {{ form_label(form.image) }}
             {% if user.image is not null %}
                 <div id="userImage">
                     <img src="{{ asset('images/uploads/' ~ user.email ~ '/' ~ user.image) }}"
                          class="rounded-circle" width="50px"/>
-                    <button type="button" id="editImage" class="btn btn-info">Edit</button>
-                    <button type="button" id="deleteImage" class="btn btn-danger">Delete</button>
+                    <button type="button" id="editImageButton" class="btn btn-info">Edit</button>
+                    <button type="button" id="deleteImageButton" class="btn btn-danger">Delete</button>
                 </div>
-                {{ form_widget(form.image, { 'attr': {'class': 'd-none'} }) }}
+                {{ form_widget(form.image, {'attr': {'class': 'd-none' }}) }}
             {% else %}
                 {{ form_widget(form.image, {'attr': {'class': 'form-control-file' }}) }}
             {% endif %}
             {{ form_end(form) }}
+
         </div>
         <div class="modal-footer">
             <button type="button" id="saveChangeButton" class="btn btn-dark">Save changes</button>

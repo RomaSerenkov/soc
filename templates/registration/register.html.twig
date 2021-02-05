@@ -3,31 +3,27 @@
 {% block title %}Register{% endblock %}
 
 {% block stylesheets %}
-    {{ encore_entry_link_tags('login_style') }}
+    {{ encore_entry_link_tags('register_style') }}
 {% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="row justify-content-center sign-container">
             <div class="col-xs-12 col-sm-6 col-md-4">
-                <h1 class="text-center login-title">Registration</h1>
+                <h1 class="text-center register-title">Registration</h1>
                 <div class="account-wall">
-                    <img class="profile-img" src="{{ asset('build/images/login/add-user-icon-256.png') }}"
+                    <img class="profile-img" src="{{ asset('images/login/add-user-icon-256.png') }}"
                          alt="">
-                    {% for flashError in app.flashes('verify_email_error') %}
-                        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
-                    {% endfor %}
 
-                    {{ form_start(registrationForm, {'attr': {'class': 'form-signin'}}) }}
-                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control',
-                        'placeholder': 'Email'}}) }}
-                    {{ form_widget(registrationForm.password.first, {'attr': {'class': 'form-control',
-                        'placeholder': 'Password'}}) }}
-                    {{ form_widget(registrationForm.password.second, {'attr': {'class': 'form-control',
-                        'placeholder': 'Repeat password'}}) }}
-
-                    <button type="submit" class="btn btn-lg btn-dark btn-block">Register</button>
+                    {{ form_start(registrationForm, {'attr': {'class': 'form-signup'}}) }}
+                        {{ form_row(registrationForm.firstName, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_row(registrationForm.lastName, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_row(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_row(registrationForm.password.first, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_row(registrationForm.password.second, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_row(registrationForm.submit, {'attr': {'class': 'btn btn-lg btn-dark btn-block'}}) }}
                     {{ form_end(registrationForm) }}
+
                 </div>
                 <a href="{{ path('security_login') }}" class="text-center new-account">Login to your account</a>
             </div>

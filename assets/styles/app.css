@@ -1,9 +1,9 @@
-.container-fluid{
+.container-fluid {
     padding-left: 0;
     padding-right: 0;
 }
 
-.navbar-dark{
+.navbar-dark {
     margin-bottom: 3%;
 }
 
@@ -13,7 +13,12 @@
     text-decoration: none;
 }
 
-.sidebar a:hover{
+.sidebar a:hover {
     color: white;
     background: #777777;
+}
+
+.container-fluid {
+    padding-left: 0;
+    padding-right: 0;
 }
