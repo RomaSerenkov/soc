@@ -1,3 +1,7 @@
+body {
+    background: #edeef0;
+}
+
 .container-fluid {
     padding-left: 0;
     padding-right: 0;
@@ -14,11 +18,28 @@
 }
 
 .sidebar a:hover {
-    color: white;
-    background: #777777;
+    background: rgba(0,0,0,.075);
+}
+
+.sidebar .list-group-item {
+    border: 0;
+}
+
+.sidebar .list-group-flush {
+    border-radius: 0.4rem;
 }
 
 .container-fluid {
     padding-left: 0;
     padding-right: 0;
+}
+
+.content {
+    background: white;
+    padding: 5% 0;
+    border-radius: 0.4rem;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: white;
 }

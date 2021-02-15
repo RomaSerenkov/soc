@@ -2,11 +2,14 @@
 
 namespace App\Form;
 
+use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -38,11 +41,12 @@ class ProfileFormType extends AbstractType
             ->add('birthday', DateType::class, [
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
-                'required' => true,
+                'required' => false,
             ])
             ->add('image', FileType::class, [
                 'required' => false,
                 'label' => 'Photo',
+                'mapped' => false,
                 'attr' => [
                     'accept' => 'image/jpeg, image/png'
                 ],
@@ -56,6 +60,16 @@ class ProfileFormType extends AbstractType
                         'mimeTypesMessage' => 'Please upload a JPG or PNG',
                     ])
                 ]
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Save changes'
             ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => User::class,
+        ]);
     }
 }

@@ -1,0 +1,41 @@
+.list-group {
+    margin: 0 5%;
+}
+
+.list-group-item {
+    border: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.button {
+    position: absolute;
+    top: -30px;
+    right: 60px;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.button:hover {
+    -webkit-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+.button .fa-user-edit {
+    position: absolute;
+    top: 15px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    color: white;
+}
+
+#profile_form_image {
+    margin-top: 10px;
+}
+
+#userImage {
+    margin-top: 10px;
+}

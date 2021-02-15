@@ -26,13 +26,14 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
-    .addEntry('app', './assets/app.js')
-    .addEntry('profile', './assets/js/profile.js')
+    .addEntry('app_js', './assets/app.js')
+    .addEntry('profile_js', './assets/js/profile.js')
 
-    .addStyleEntry('bootstrap', './assets/styles/global.scss')
+    .addStyleEntry('bootstrap_style', './assets/styles/global.scss')
     .addStyleEntry('app_style', './assets/styles/app.css')
     .addStyleEntry('login_style', './assets/styles/login.css')
     .addStyleEntry('register_style', './assets/styles/register.css')
+    .addStyleEntry('profile_style', './assets/styles/profile.css')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')

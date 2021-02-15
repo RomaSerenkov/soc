@@ -132,12 +132,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getBirthday()
+    public function getBirthday(): ?\DateTime
     {
         return $this->birthday;
     }
 
-    public function setBirthday($birthday): self
+    public function setBirthday(?\DateTime $birthday): self
     {
         $this->birthday = $birthday;
 
@@ -149,7 +149,7 @@ class User implements UserInterface
         return $this->image;
     }
 
-    public function setImage($image): self
+    public function setImage(?string $image): self
     {
         $this->image = $image;
 

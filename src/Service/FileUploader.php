@@ -6,21 +6,22 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileUploader
 {
-    private $targetDir;
+    private string $targetDir;
 
-    public function __construct($targetDir)
+    public function __construct(string $targetDir)
     {
         $this->targetDir = $targetDir;
     }
 
     public function upload(string $path, UploadedFile $file): string
     {
-        $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+        $fileName = "{$this->generateUniqueFileName()}.{$file->guessExtension()}";
+        $filePath = "{$this->getTargetDir()}/{$path}";
 
         try {
-            $file->move($this->getTargetDir() . $path, $fileName);
+            $file->move($filePath, $fileName);
         } catch (FileException $e) {
-            throw new FileException('Failed to upload file');
+            throw new FileException($e->getMessage());
         }
 
         return $fileName;
@@ -28,7 +29,8 @@ class FileUploader
 
     public function delete(string $path): bool
     {
-        $filePath = $this->getTargetDir() . $path;
+        $filePath = "{$this->getTargetDir()}/{$path}";
+
         if (file_exists($filePath)) {
             unlink($filePath);
 
@@ -38,14 +40,11 @@ class FileUploader
         return false;
     }
 
-    public function getTargetDir()
+    public function getTargetDir(): string
     {
         return $this->targetDir;
     }
 
-    /**
-     * @return string
-     */
     private function generateUniqueFileName(): string
     {
         return md5(uniqid());

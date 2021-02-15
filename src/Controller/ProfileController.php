@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\Form\ProfileFormType;
-use App\Repository\UserRepository;
 use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @Route("/profile")
@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProfileController extends AbstractController
 {
     /**
-     * @Route("/", name="profile_index")
+     * @Route("", name="profile_index")
      */
     public function index(): Response
     {
@@ -25,94 +25,66 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * @Route("/edit", name="profile_edit")
+     * @Route("/profileInformation", name="profile_information")
      */
-    public function edit(Request $request, UserRepository $userRepository, FileUploader $fileUploader): Response
+    public function profileInformation(): Response
     {
-        $user = $userRepository->findOneBy([
-            'email' => $this->getUser()->getUsername()
-        ]);
-
-        $form = $this->createForm(ProfileFormType::class);
-        $form->handleRequest($request);
-
-        if ($request->isMethod('POST')) {
-            if ($form->isValid()) {
-                $file = $form['image']->getData();
-                $fileName = null;
-                $pathFolder = $user->getEmail();
-
-                if ($file) {
-                    $fileName = $fileUploader->upload($pathFolder, $file);
-                }
-
-                if ($user->getImage() && !$file) {
-                    $fileName = $user->getImage();
-                } elseif ($user->getImage()) {
-                    $fileUploader->delete($pathFolder . '/' . $user->getImage());
-                }
-
-                $user->setFirstName($form->get('firstName')->getData());
-                $user->setLastName($form->get('lastName')->getData());
-                $user->setBirthday($form->get('birthday')->getData());
-                $user->setImage($fileName);
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
-
-                $profileInformation = $this->renderView('profile/profileInformation.html.twig', [
-                    'user' => $user,
-                ]);
-
-                $editForm = $this->renderView('profile/editForm.html.twig', [
-                    'form' => $form->createView(),
-                    'user' => $user
-                ]);
-
-                return new JsonResponse([
-                    'profileInformation' => $profileInformation,
-                    'editForm'           => $editForm,
-                    'message'            => 'formValid'
-                ], 200);
-            }
-        }
-
         $profileInformation = $this->renderView('profile/profileInformation.html.twig', [
-            'user' => $user
-        ]);
-
-        $editForm = $this->renderView('profile/editForm.html.twig', [
-            'form' => $form->createView(),
-            'user' => $user
+            'user' => $this->getUser()
         ]);
 
         return new JsonResponse([
             'profileInformation' => $profileInformation,
-            'editForm'           => $editForm,
-            'message'            => 'Ok'
-        ], 200);
+        ]);
+    }
+
+    /**
+     * @Route("/edit", name="profile_edit")
+     */
+    public function edit(Request $request, EntityManagerInterface $entityManager, FileUploader $fileUploader): Response
+    {
+        $form = $this->createForm(ProfileFormType::class, $this->getUser());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form['image']->getData();
+            $pathFolder = $this->getUser()->getEmail();
+
+            if ($this->getUser()->getImage() && $file) {
+                $fileUploader->delete("{$pathFolder}/{$this->getUser()->getImage()}");
+            }
+
+            if ($file) {
+                $fileName = $fileUploader->upload($pathFolder, $file);
+                $this->getUser()->setImage($fileName);
+            }
+
+            $entityManager->flush();
+
+            return new JsonResponse();
+        }
+
+        $editForm = $this->renderView('profile/editForm.html.twig', [
+            'form' => $form->createView(),
+            'user' => $this->getUser()
+        ]);
+
+        return new JsonResponse([
+            'editForm' => $editForm
+        ]);
     }
 
     /**
      * @Route("/deleteImage", name="profile_deleteImage")
      */
-    public function deleteImage(UserRepository $userRepository, FileUploader $fileUploader): Response
+    public function deleteImage(EntityManagerInterface $entityManager, FileUploader $fileUploader): Response
     {
-        $user = $userRepository->findOneBy([
-            'email' => $this->getUser()->getUsername()
-        ]);
+        $pathToImage = "{$this->getUser()->getEmail()}/{$this->getUser()->getImage()}";
+        $fileUploader->delete($pathToImage);
 
-        $fileUploader->delete($user->getEmail() . '/' . $user->getImage());
-
-        $user->setImage(null);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($user);
+        $this->getUser()->setImage(null);
         $entityManager->flush();
 
-        return new JsonResponse([
-            'message' => 'Success!'
-        ], 200);
+        return new JsonResponse();
     }
 }
